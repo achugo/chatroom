@@ -3,7 +3,8 @@ class Chat {
     constructor(username, room){
         this.username = username;
         this.room = room;
-        this.chat = db.collection('chat')
+        this.chat = db.collection('chat');
+        this.unsubscrybe;
     }
 
     async addChat(message){
@@ -19,8 +20,8 @@ class Chat {
     }
 
     getChats(callback){
-        this.chat
-        .where('room', '==', 'general')
+         this.unsubscrybe = this.chat
+        .where('room', '==', this.room)
         .orderBy('created_at')
         .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
@@ -31,10 +32,29 @@ class Chat {
             })
         })
     }
+    updateUsername(username){
+        this.username = username;
+        console.log('username was changed to ' + this.username)
+        localStorage.setItem('username', username);
+    }
+
+    updateRoom(room){
+        this.room = room;
+        this.unsubscrybe();
+        console.log('room was change to ' + this.room)
+    }
 }
 
-const fresh = new Chat('emeka', 'gaming');
-fresh.getChats((data) => {
-    console.log(data)
-})
-fresh.addChat('Welcome to this eloquent room guys')
+// const fresh = new Chat('emeka', 'gaming');
+// fresh.getChats((data) => {
+//     console.log(data)
+// })
+
+// setTimeout(() => {
+//     fresh.updateUsername('lynda');
+//     fresh.updateRoom('general');
+//     fresh.getChats((data) => {
+//         console.log(data)
+//     })
+//     fresh.addChat('Welcome to this new chat boys')
+// }, 3000);
